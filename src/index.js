@@ -38,10 +38,25 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-// a function to generate a 16 character random string
+function checkEmail(email) {
+  // https://pt.stackoverflow.com/questions/1386/express%C3%A3o-regular-para-valida%C3%A7%C3%A3o-de-e-mail
+  const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+  return emailRegex.test(email); 
+}
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
+  console.log(email, password);
+
+  if (!email) return res.status(400).send({ message: 'O campo "email" é obrigatório' });
+  if (!password) return res.status(400).send({ message: 'O campo "password" é obrigatório' });
+  if (!checkEmail(email)) {
+    return res.status(400).send({ message: 'O "email" deve ter o formato "email@email.com"' });
+  }
+  if (password.length < 6) {
+    return res.status(400).send({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+  }
 
   const randomString = crypto.randomBytes(8).toString('hex');
   res.send({ token: randomString });
