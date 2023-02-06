@@ -1,6 +1,6 @@
 const express = require('express');
-const fs = require('fs/promises')
-const path = require('path')
+const fs = require('fs/promises');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -17,9 +17,22 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
-app.get('/talker', async (req, res) => {
-    const filePath = path.resolve(__dirname, 'talker.json');
-    const data = await fs.readFile(filePath, 'utf8');
-    res.send(JSON.parse(data));
-  
+app.get('/talker', async (_req, res) => {
+    const talkerFilePath = path.resolve(__dirname, 'talker.json');
+    const data = await fs.readFile(talkerFilePath, 'utf8');
+    res.send(JSON.parse(data));  
+});
+
+app.get('/talker/:id', async (req, res) => {
+  const talkerFilePath = path.resolve(__dirname, 'talker.json');
+  const json = await fs.readFile(talkerFilePath, 'utf8');
+  console.log(typeof json);
+  const data = JSON.parse(json);
+  console.log(data.find((t) => t.id === 1));
+  const talker = data.find((talk) => talk.id === Number(req.params.id));
+  if (!talker) {
+    res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
+  } else {
+    res.send(talker);    
+  }
 });
