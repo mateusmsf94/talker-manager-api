@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
 app.use(express.json());
@@ -35,4 +36,13 @@ app.get('/talker/:id', async (req, res) => {
   } else {
     res.send(talker);    
   }
+});
+
+// a function to generate a 16 character random string
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  const randomString = crypto.randomBytes(8).toString('hex');
+  res.send({ token: randomString });
 });
