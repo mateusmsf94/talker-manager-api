@@ -10,6 +10,8 @@ const {
   watchedAtValidation,
   rateValidation } = require('./talkerValidation');
 
+const { readTalker, appendTalker } = require('./readAndWrite');
+
 const app = express();
 app.use(express.json());
 
@@ -26,9 +28,8 @@ app.listen(PORT, () => {
 });
 
 app.get('/talker', async (_req, res) => {
-    const talkerFilePath = path.resolve(__dirname, 'talker.json');
-    const data = await fs.readFile(talkerFilePath, 'utf8');
-    res.send(JSON.parse(data));  
+    const talkerData = await readTalker();
+    res.send(talkerData);  
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -73,5 +74,6 @@ app.post('/talker',
   watchedAtValidation,
   rateValidation,
   async (req, res) => {
-  
+    await appendTalker(req.body);
+    res.status(201).send(req.body);
 });
