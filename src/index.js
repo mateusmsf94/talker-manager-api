@@ -2,6 +2,13 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
+const { 
+  tokenValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation } = require('./talkerValidation');
 
 const app = express();
 app.use(express.json());
@@ -27,9 +34,7 @@ app.get('/talker', async (_req, res) => {
 app.get('/talker/:id', async (req, res) => {
   const talkerFilePath = path.resolve(__dirname, 'talker.json');
   const json = await fs.readFile(talkerFilePath, 'utf8');
-  console.log(typeof json);
   const data = JSON.parse(json);
-  console.log(data.find((t) => t.id === 1));
   const talker = data.find((talk) => talk.id === Number(req.params.id));
   if (!talker) {
     res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
@@ -46,8 +51,6 @@ function checkEmail(email) {
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
-  console.log(email, password);
 
   if (!email) return res.status(400).send({ message: 'O campo "email" é obrigatório' });
   if (!password) return res.status(400).send({ message: 'O campo "password" é obrigatório' });
@@ -60,4 +63,15 @@ app.post('/login', (req, res) => {
 
   const randomString = crypto.randomBytes(8).toString('hex');
   res.send({ token: randomString });
+});
+
+app.post('/talker',
+  tokenValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation,
+  async (req, res) => {
+  
 });
