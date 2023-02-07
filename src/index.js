@@ -10,7 +10,11 @@ const {
   watchedAtValidation,
   rateValidation } = require('./talkerValidation');
 
-const { readTalker, appendTalker, updateTalker } = require('./readAndWrite');
+const { 
+  readTalker,
+  appendTalker,
+  updateTalker,
+  deleteTalker } = require('./readAndWrite');
 
 const app = express();
 app.use(express.json());
@@ -88,4 +92,9 @@ app.put('/talker/:id',
   async (req, res) => {
     const talker = await updateTalker(req.params.id, req.body);
     res.status(200).send(talker);
+  });
+
+  app.delete('/talker/:id', tokenValidation, async (req, res) => {
+    await deleteTalker(req.params.id);
+    res.status(204).send();
   });

@@ -19,11 +19,16 @@ async function appendTalker(Talker) {
 async function updateTalker(id, updatedTalker) {
   const talkers = await readTalker();
   const talkerIndex = talkers.findIndex((talker) => talker.id === Number(id));
-  // const talker = talkers[talkerIndex];
   const updatedTalkerData = { id: Number(id), ...updatedTalker };
   talkers[talkerIndex] = updatedTalkerData;
   await fs.writeFile(talkerFilePath, JSON.stringify(talkers));
   return updatedTalkerData;
 }
 
-module.exports = { readTalker, appendTalker, updateTalker };
+async function deleteTalker(id) {
+  let talkers = await readTalker();
+  talkers = talkers.filter((talker) => talker.id !== Number(id));
+  await fs.writeFile(talkerFilePath, JSON.stringify(talkers));
+} 
+
+module.exports = { readTalker, appendTalker, updateTalker, deleteTalker };
