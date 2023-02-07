@@ -14,7 +14,8 @@ const {
   readTalker,
   appendTalker,
   updateTalker,
-  deleteTalker } = require('./readAndWrite');
+  deleteTalker,
+  searchTalker } = require('./readAndWrite');
 
 const app = express();
 app.use(express.json());
@@ -29,6 +30,11 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker/search', tokenValidation, async (req, res) => {
+  const talker = await searchTalker(req.query.q);
+  res.status(200).send(talker);
 });
 
 app.get('/talker', async (_req, res) => {

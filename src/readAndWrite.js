@@ -29,6 +29,12 @@ async function deleteTalker(id) {
   let talkers = await readTalker();
   talkers = talkers.filter((talker) => talker.id !== Number(id));
   await fs.writeFile(talkerFilePath, JSON.stringify(talkers));
-} 
+}
 
-module.exports = { readTalker, appendTalker, updateTalker, deleteTalker };
+async function searchTalker(name) {
+  const talkers = await readTalker();
+  if (!name) return talkers;
+  return talkers.filter((talker) => talker.name.includes(name));
+}
+
+module.exports = { readTalker, appendTalker, updateTalker, deleteTalker, searchTalker };
