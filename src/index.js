@@ -10,7 +10,7 @@ const {
   watchedAtValidation,
   rateValidation } = require('./talkerValidation');
 
-const { readTalker, appendTalker } = require('./readAndWrite');
+const { readTalker, appendTalker, updateTalker } = require('./readAndWrite');
 
 const app = express();
 app.use(express.json());
@@ -77,3 +77,15 @@ app.post('/talker',
     await appendTalker(req.body);
     res.status(201).send(req.body);
 });
+
+app.put('/talker/:id',
+  tokenValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation,
+  async (req, res) => {
+    const talker = await updateTalker(req.params.id, req.body);
+    res.status(200).send(talker);
+  });
